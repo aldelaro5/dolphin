@@ -19,6 +19,7 @@ extern const std::string scm_distributor_str;
 
 // Force enable logging in the right modes. For some reason, something had changed
 // so that debugfast no longer logged.
+#define DEBUGFAST
 #if defined(_DEBUG) || defined(DEBUGFAST)
 #undef LOGGING
 #define LOGGING 1

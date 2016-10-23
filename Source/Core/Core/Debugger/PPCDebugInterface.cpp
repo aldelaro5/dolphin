@@ -140,8 +140,8 @@ void PPCDebugInterface::ToggleMemCheck(unsigned int address, bool read, bool wri
   {
     // Add Memory Check
     TMemCheck MemCheck;
-    MemCheck.StartAddress = address;
-    MemCheck.EndAddress = address;
+    MemCheck.VirtualStartAddress = address;
+    MemCheck.VirtualEndAddress = address;
     MemCheck.OnRead = read;
     MemCheck.OnWrite = write;
 

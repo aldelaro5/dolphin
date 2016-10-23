@@ -156,8 +156,8 @@ void MemoryCheckDlg::OnOK(wxCommandEvent& event)
     if (!EndAddressOK)
       EndAddress = StartAddress;
 
-    MemCheck.StartAddress = StartAddress;
-    MemCheck.EndAddress = EndAddress;
+    MemCheck.VirtualStartAddress = StartAddress;
+    MemCheck.VirtualEndAddress = EndAddress;
     MemCheck.bRange = StartAddress != EndAddress;
     MemCheck.OnRead = OnRead;
     MemCheck.OnWrite = OnWrite;

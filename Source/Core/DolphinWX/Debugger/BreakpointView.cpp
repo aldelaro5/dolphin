@@ -65,15 +65,15 @@ void CBreakPointView::Repopulate()
     int item = InsertItem(0, memcheck_on_str);
     SetItem(item, 1, StrToWxStr("MBP"));
 
-    Symbol* symbol = g_symbolDB.GetSymbolFromAddr(rMemCheck.StartAddress);
+    Symbol* symbol = g_symbolDB.GetSymbolFromAddr(rMemCheck.VirtualStartAddress);
     if (symbol)
     {
-      wxString memcheck_start_addr = StrToWxStr(g_symbolDB.GetDescription(rMemCheck.StartAddress));
+      wxString memcheck_start_addr = StrToWxStr(g_symbolDB.GetDescription(rMemCheck.VirtualStartAddress));
       SetItem(item, 2, memcheck_start_addr);
     }
 
     std::string address_range_str =
-        StringFromFormat("%08x to %08x", rMemCheck.StartAddress, rMemCheck.EndAddress);
+        StringFromFormat("%08x to %08x", rMemCheck.VirtualStartAddress, rMemCheck.VirtualEndAddress);
     SetItem(item, 3, StrToWxStr(address_range_str));
 
     std::string mode;
@@ -84,7 +84,7 @@ void CBreakPointView::Repopulate()
 
     SetItem(item, 4, StrToWxStr(mode));
 
-    SetItemData(item, rMemCheck.StartAddress);
+    SetItemData(item, rMemCheck.VirtualStartAddress);
   }
 
   Refresh();

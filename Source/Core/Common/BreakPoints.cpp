@@ -137,10 +137,10 @@ MemChecks::TMemChecksStr MemChecks::GetStrings() const
   for (const TMemCheck& bp : m_MemChecks)
   {
     std::stringstream mc;
-    mc << std::hex << bp.StartAddress;
-    mc << " " << (bp.bRange ? bp.EndAddress : bp.StartAddress) << " " << (bp.bRange ? "n" : "")
-       << (bp.OnRead ? "r" : "") << (bp.OnWrite ? "w" : "") << (bp.Log ? "l" : "")
-       << (bp.Break ? "p" : "");
+    mc << std::hex << bp.VirtualStartAddress;
+    mc << " " << (bp.bRange ? bp.VirtualEndAddress : bp.VirtualStartAddress) << " "
+       << (bp.bRange ? "n" : "") << (bp.OnRead ? "r" : "") << (bp.OnWrite ? "w" : "")
+       << (bp.Log ? "l" : "") << (bp.Break ? "p" : "");
     mcs.push_back(mc.str());
   }
 
@@ -154,16 +154,16 @@ void MemChecks::AddFromStrings(const TMemChecksStr& mcstrs)
     TMemCheck mc;
     std::stringstream ss;
     ss << std::hex << mcstr;
-    ss >> mc.StartAddress;
+    ss >> mc.VirtualStartAddress;
     mc.bRange = mcstr.find("n") != mcstr.npos;
     mc.OnRead = mcstr.find("r") != mcstr.npos;
     mc.OnWrite = mcstr.find("w") != mcstr.npos;
     mc.Log = mcstr.find("l") != mcstr.npos;
     mc.Break = mcstr.find("p") != mcstr.npos;
     if (mc.bRange)
-      ss >> mc.EndAddress;
+      ss >> mc.VirtualEndAddress;
     else
-      mc.EndAddress = mc.StartAddress;
+      mc.VirtualEndAddress = mc.VirtualStartAddress;
     Add(mc);
   }
 }
@@ -171,7 +171,7 @@ void MemChecks::AddFromStrings(const TMemChecksStr& mcstrs)
 void MemChecks::Add(const TMemCheck& _rMemoryCheck)
 {
   bool had_any = HasAny();
-  if (GetMemCheck(_rMemoryCheck.StartAddress) == nullptr)
+  if (GetMemCheck(_rMemoryCheck.VirtualStartAddress) == nullptr)
     m_MemChecks.push_back(_rMemoryCheck);
   // If this is the first one, clear the JIT cache so it can switch to
   // watchpoint-compatible code.
@@ -183,7 +183,7 @@ void MemChecks::Remove(u32 _Address)
 {
   for (auto i = m_MemChecks.begin(); i != m_MemChecks.end(); ++i)
   {
-    if (i->StartAddress == _Address)
+    if (i->VirtualStartAddress == _Address)
     {
       m_MemChecks.erase(i);
       if (!HasAny() && jit)
@@ -199,10 +199,10 @@ TMemCheck* MemChecks::GetMemCheck(u32 address)
   {
     if (bp.bRange)
     {
-      if (address >= bp.StartAddress && address <= bp.EndAddress)
+      if (address >= bp.VirtualStartAddress && address <= bp.VirtualEndAddress)
         return &(bp);
     }
-    else if (bp.StartAddress == address)
+    else if (bp.VirtualStartAddress == address)
     {
       return &(bp);
     }

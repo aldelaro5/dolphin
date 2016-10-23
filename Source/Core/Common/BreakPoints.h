@@ -18,6 +18,12 @@ struct TBreakPoint
   bool bTemporary;
 };
 
+struct TRangeSegment
+{
+  u32 Start = 0;
+  u32 End = 0;
+};
+
 struct TMemCheck
 {
   TMemCheck()
@@ -29,6 +35,8 @@ struct TMemCheck
 
   u32 VirtualStartAddress;
   u32 VirtualEndAddress;
+
+  std::vector<TRangeSegment> TranslatedSegments;
 
   bool bRange;
 
@@ -92,7 +100,7 @@ public:
   TMemChecksStr GetStrings() const;
   void AddFromStrings(const TMemChecksStr& mcs);
 
-  void Add(const TMemCheck& _rMemoryCheck);
+  void Add(TMemCheck& _rMemoryCheck);
 
   // memory breakpoint
   TMemCheck* GetMemCheck(u32 address);

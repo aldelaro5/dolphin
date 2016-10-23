@@ -217,6 +217,8 @@ void HostWrite_U16(const u16 var, const u32 address);
 void HostWrite_U32(const u32 var, const u32 address);
 void HostWrite_U64(const u64 var, const u32 address);
 
+u32 HostTranslateAddress(const u32 address);
+
 // Returns whether a read or write to the given address will resolve to a RAM
 // access given the current CPU state.
 bool HostIsRAMAddress(const u32 address);

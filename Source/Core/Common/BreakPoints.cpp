@@ -168,11 +168,25 @@ void MemChecks::AddFromStrings(const TMemChecksStr& mcstrs)
   }
 }
 
-void MemChecks::Add(const TMemCheck& _rMemoryCheck)
+void MemChecks::Add(TMemCheck& _rMemoryCheck)
 {
   bool had_any = HasAny();
   if (GetMemCheck(_rMemoryCheck.VirtualStartAddress) == nullptr)
-    m_MemChecks.push_back(_rMemoryCheck);
+  {
+    if (_rMemoryCheck.bRange)
+    {
+    }
+    else
+    {
+      u32 translatedAddress = PowerPC::HostTranslateAddress(_rMemoryCheck.VirtualStartAddress);
+      if (translatedAddress)
+      {
+        TRangeSegment segment = {translatedAddress, translatedAddress};
+        _rMemoryCheck.TranslatedSegments.push_back(segment);
+        m_MemChecks.push_back(_rMemoryCheck);
+      }
+    }
+  }
   // If this is the first one, clear the JIT cache so it can switch to
   // watchpoint-compatible code.
   if (!had_any && jit)

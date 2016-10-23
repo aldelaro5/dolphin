@@ -1247,4 +1247,8 @@ static TranslateAddressResult TranslateAddress(const u32 address)
   return TranslatePageAddress(address, flag);
 }
 
+u32 HostTranslateAddress(const u32 address)
+{
+  return PowerPC::TranslateAddress<FLAG_NO_EXCEPTION>(address).address;
+}
 }  // namespace

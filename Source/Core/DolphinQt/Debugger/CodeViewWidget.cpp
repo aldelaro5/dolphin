@@ -9,6 +9,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QFile>
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QKeyEvent>
@@ -17,6 +18,7 @@
 #include <QResizeEvent>
 #include <QScrollBar>
 #include <QTableWidgetItem>
+#include <QTextStream>
 #include <QWheelEvent>
 
 #include "Common/StringUtil.h"
@@ -298,7 +300,17 @@ void CodeViewWidget::OnCopyFunction()
     text += StringFromFormat("%08x: ", addr) + disasm + "\r\n";
   }
 
-  QApplication::clipboard()->setText(QString::fromStdString(text));
+  QFile scriptFile(QString::fromStdString("rev1.txt"));
+  if( !scriptFile.open(QIODevice::WriteOnly) )
+  {
+    QString msg = QString( tr("SaveCurrentMacro - Unable to save current script to file: ") );
+    return;
+  }
+  QTextStream outputStream(&scriptFile);
+  outputStream << QString::fromStdString(text);
+  scriptFile.close();
+
+  // QApplication::clipboard()->setText(QString::fromStdString(text));
 }
 
 void CodeViewWidget::OnCopyHex()
@@ -409,7 +421,7 @@ void CodeViewWidget::OnSetSymbolSize()
   int size =
       QInputDialog::getInt(this, tr("Rename symbol"),
                            tr("Set symbol size (%1):").arg(QString::fromStdString(symbol->name)),
-                           symbol->size, 1, 0xFFFF, 1, &good);
+                           symbol->size, 1, 28993428, 1, &good);
 
   if (!good)
     return;
